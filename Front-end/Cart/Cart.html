@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cart - MADAS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-[#F4F4F4] text-[#27491F] min-h-screen">
+    <div class="max-w-4xl mx-auto p-6">
+        <h1 class="text-3xl font-bold mb-6">🛒 Your Cart</h1>
+        <div id="cartItems" class="space-y-4"></div>
+        <p id="total" class="text-xl font-bold mt-6"></p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC-ls1TrvSkrw71KqmB_kHYgPoj9H55oa8",
+            authDomain: "madas-store.firebaseapp.com",
+            projectId: "madas-store",
+            storageBucket: "madas-store.appspot.com",
+            messagingSenderId: "527071300010",
+            appId: "1:527071300010:web:70470e2204065b4590583d3",
+            measurementId: "G-NQVR1F4N3Q"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function loadCart() {
+            const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+            const countMap = {};
+            cart.forEach(id => countMap[id] = (countMap[id] || 0) + 1);
+
+            const container = document.getElementById("cartItems");
+            let total = 0;
+            container.innerHTML = "";
+
+            for (const id of Object.keys(countMap)) {
+                const snap = await getDoc(doc(db, "products", id));
+                if (snap.exists()) {
+                    const p = snap.data();
+                    const qty = countMap[id];
+                    const itemTotal = p.price * qty;
+                    total += itemTotal;
+
+                    container.innerHTML += `
+            <div class="bg-white p-4 rounded shadow">
+              <h2 class="text-xl font-semibold">${p.name}</h2>
+              <p class="text-sm text-gray-500">${p.brand}</p>
+              <p>Price: $${p.price} × ${qty} = <strong>$${itemTotal.toFixed(2)}</strong></p>
+            </div>
+          `;
+                }
+            }
+
+            document.getElementById("total").textContent = "Total: $" + total.toFixed(2);
+        }
+
+        loadCart();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Madas | Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./assets/CSS/Style.css" />
+</head>
+
+<body class="bg-white text-gray-800 font-sans">
+
+
+    <!-- ✅ RESPONSIVE NAVBAR -->
+    <!-- ✅ NAVBAR -->
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+
+            <!-- Logo -->
+            <div class="text-xl font-bold text-gray-900">MADAS</div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="index.html" class="hover:text-blue-600">Home</a>
+
+                <!-- Products Dropdown -->
+                <div class="relative group">
+                    <button class="hover:text-blue-600">Products</button>
+                    <div
+                        class="absolute hidden group-hover:block bg-white shadow-md mt-2 p-4 rounded z-10 min-w-[160px]">
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Nike</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Adidas</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Puma</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Converse</a>
+                    </div>
+                </div>
+
+                <!-- Our Collection Dropdown -->
+                <div class="relative group">
+                    <button class="hover:text-blue-600">Our Collection</button>
+                    <div
+                        class="absolute hidden group-hover:block bg-white shadow-md mt-2 p-4 rounded z-10 min-w-[160px]">
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Women</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Men</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Kids</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-red-600 font-semibold">Sale</a>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                <div class="relative">
+                    <input type="text" placeholder="Search..."
+                        class="border rounded px-3 py-1 w-40 focus:outline-none focus:ring" />
+                </div>
+
+                <!-- Cart -->
+                <a href="#" class="text-xl hover:text-blue-600">🛒</a>
+
+                <!-- Auth -->
+                <a href="#" class="text-sm hover:text-blue-600">Login</a>
+                <a href="#" class="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Sign Up</a>
+            </div>
+
+            <!-- Hamburger -->
+            <button class="md:hidden" onclick="toggleMenu()">
+                <svg class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" stroke-width="2"
+                    viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-4 pb-4 space-y-3">
+            <a href="index.html" class="block hover:text-blue-600">Home</a>
+
+            <details class="block">
+                <summary class="cursor-pointer hover:text-blue-600">Products</summary>
+                <div class="pl-4">
+                    <a href="#" class="block py-1 text-sm hover:text-blue-500">Nike</a>
+                    <a href="#" class="block py-1 text-sm hover:text-blue-500">Adidas</a>
+                    <a href="#" class="block py-1 text-sm hover:text-blue-500">Puma</a>
+                    <a href="#" class="block py-1 text-sm hover:text-blue-500">Converse</a>
+                </div>
+            </details>
+
+            <details class="block">
+                <summary class="cursor-pointer hover:text-blue-600">Our Collection</summary>
+                <div class="pl-4">
+                    <a href="#" class="block py-1 text-sm hover:text-blue-500">Women</a>
+                    <a href="#" class="block py-1 text-sm hover:text-blue-500">Men</a>
+                    <a href="#" class="block py-1 text-sm hover:text-blue-500">Kids</a>
+                    <a href="#" class="block py-1 text-sm text-red-600 font-semibold">Sale</a>
+                </div>
+            </details>
+
+            <input type="text" placeholder="Search..."
+                class="border rounded px-3 py-1 w-full focus:outline-none focus:ring" />
+            <a href="#" class="block text-xl">🛒 Cart</a>
+            <a href="#" class="block">Login</a>
+            <a href="#" class="block bg-blue-600 text-white px-3 py-1 rounded text-center">Sign Up</a>
+        </div>
+    </nav>
+    <!-- ✅ HERO SECTION -->
+    <section class="h-screen bg-cover bg-center flex items-center justify-center text-white"
+        style="background-image: url('https://bucket.zammit.shop/active-storage/v0logxkqx0srd46ejrhlr3fkpjpv');">
+        <div class="text-center bg-black bg-opacity-50 p-8 rounded">
+            <h1 class="text-4xl font-bold mb-4">Step into Style</h1>
+            <p class="text-lg">Discover the latest sneaker drops only at MADAS</p>
+        </div>
+    </section>
+
+    <!-- ✅ LOGO SLIDER SECTION -->
+    <section class="bg-gray-100 py-6">
+        <div class="overflow-hidden">
+            <div class="logo-slider flex space-x-12 items-center px-6">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg" class="h-10"
+                    alt="Nike Logo" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/20/Adidas_Logo.svg" class="h-10"
+                    alt="Adidas Logo" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/3/33/Vans_logo.svg" class="h-10"
+                    alt="Vans Logo" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/Puma_AG_logo.svg" class="h-10"
+                    alt="Puma Logo" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Converse_logo.svg" class="h-10"
+                    alt="Converse Logo" />
+            </div>
+        </div>
+    </section>
+    <!-- ✅ BACKGROUND VIDEO SECTION -->
+    <section class="relative h-[60vh] overflow-hidden">
+        <video autoplay muted loop playsinline class="absolute w-full h-full object-cover z-[-1]">
+            <source src="https://www.w3schools.com/howto/rain.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
+        <div class="flex items-center justify-center h-full text-white bg-black bg-opacity-50">
+            <div class="text-center px-4">
+                <h2 class="text-3xl font-bold mb-2">Experience Premium Quality</h2>
+                <p class="text-lg">Explore the latest drops, limited editions, and top-rated shoes</p>
+            </div>
+        </div>
+    </section>
+    <!-- ✅ BEST SELLING PRODUCTS SECTION -->
+    <section class="py-12 bg-white text-center">
+        <h2 class="text-3xl font-bold mb-8">Best Sellers</h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6">
+            <!-- Product 1 -->
+            <div class="border rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
+                <img src="https://images.unsplash.com/photo-1589983846990-c13eacc5c49b" alt="Sneaker 1"
+                    class="w-full h-56 object-cover" />
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold">Air Zoom Max</h3>
+                    <p class="text-gray-600">$140</p>
+                </div>
+            </div>
+
+            <!-- Product 2 -->
+            <div class="border rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
+                <img src="https://images.unsplash.com/photo-1600180758890-6d3e6aee67d4" alt="Sneaker 2"
+                    class="w-full h-56 object-cover" />
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold">Adidas Slide</h3>
+                    <p class="text-gray-600">$90</p>
+                </div>
+            </div>
+
+            <!-- Product 3 -->
+            <div class="border rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
+                <img src="https://images.unsplash.com/photo-1600185366132-9902b0d4d162" alt="Sneaker 3"
+                    class="w-full h-56 object-cover" />
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold">Converse Classic</h3>
+                    <p class="text-gray-600">$110</p>
+                </div>
+            </div>
+
+            <!-- Product 4 -->
+            <div class="border rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
+                <img src="https://images.unsplash.com/photo-1616627982173-1cf10da2aa20" alt="Sneaker 4"
+                    class="w-full h-56 object-cover" />
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold">Puma Street</h3>
+                    <p class="text-gray-600">$120</p>
+                </div>
+            </div>
+            <!-- Product 5 -->
+            <div class="border rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
+                <img src="https://images.unsplash.com/photo-1616627982173-1cf10da2aa20" alt="Sneaker 4"
+                    class="w-full h-56 object-cover" />
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold">Puma Street</h3>
+                    <p class="text-gray-600">$120</p>
+                </div>
+            </div>
+            <!-- Product 6 -->
+            <div class="border rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
+                <img src="https://images.unsplash.com/photo-1616627982173-1cf10da2aa20" alt="Sneaker 4"
+                    class="w-full h-56 object-cover" />
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold">Puma Street</h3>
+                    <p class="text-gray-600">$120</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ✅ FOOTER SECTION -->
+    <footer class="bg-gray-900 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            <!-- Logo / Brand -->
+            <div>
+                <h3 class="text-2xl font-bold mb-2">MADAS</h3>
+                <p class="text-gray-400">Master-quality sneakers for every step. Gulf vibes, Egyptian roots.</p>
+            </div>
+
+            <!-- Quick Links -->
+            <div>
+                <h4 class="text-lg font-semibold mb-2">Quick Links</h4>
+                <ul class="space-y-1 text-gray-400">
+                    <li><a href="#" class="hover:text-white">Home</a></li>
+                    <li><a href="#" class="hover:text-white">Shop</a></li>
+                    <li><a href="#" class="hover:text-white">About</a></li>
+                    <li><a href="#" class="hover:text-white">Contact</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact Info -->
+            <div>
+                <h4 class="text-lg font-semibold mb-2">Contact</h4>
+                <p class="text-gray-400">📍 Cairo, Egypt / Dubai, UAE</p>
+                <p class="text-gray-400">📞 +20 100 123 4567</p>
+                <p class="text-gray-400">📧 support@madas.co</p>
+                <div class="flex space-x-4 mt-3">
+                    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" class="h-5"
+                            alt="Facebook" /></a>
+                    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733558.png" class="h-5"
+                            alt="Instagram" /></a>
+                    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="h-5"
+                            alt="WhatsApp" /></a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="text-center text-gray-500 text-sm mt-8">
+            &copy; 2025 MADAS. All rights reserved.
+        </div>
+    </footer>
+    <script src="./assets/JS/Main.js"></script>
+</body>
+
+</html>

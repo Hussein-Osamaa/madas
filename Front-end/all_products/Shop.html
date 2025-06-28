@@ -1,0 +1,91 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<!-- Add inside your shop.html body -->
+<div class="max-w-7xl mx-auto px-4">
+    <div class="flex flex-wrap gap-4 my-6">
+        <select id="filterBrand" class="border px-3 py-2 rounded">
+            <option value="">All Brands</option>
+        </select>
+        <select id="filterSize" class="border px-3 py-2 rounded">
+            <option value="">All Sizes</option>
+        </select>
+    </div>
+    <div id="shopProducts" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+</div>
+
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyC-ls1TrvSkrw71KqmB_kHYgPoj9H55oa8",
+        authDomain: "madas-store.firebaseapp.com",
+        projectId: "madas-store",
+        storageBucket: "madas-store.appspot.com",
+        messagingSenderId: "527071300010",
+        appId: "1:527071300010:web:70470e2204065b4590583d3",
+        measurementId: "G-NQVR1F4N3Q"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    function renderProduct(p, id) {
+        return `
+        <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition duration-300">
+          <img src="${p.imageUrl || 'https://via.placeholder.com/300x200'}" alt="${p.name}" class="w-full h-48 object-cover rounded mb-3">
+          <h3 class="text-xl font-semibold text-gray-900 mb-1">${p.name}</h3>
+          <p class="text-sm text-gray-500 mb-2">${p.brand}</p>
+          <p class="text-lg font-bold text-[#FFD300] mb-3">$${p.price}</p>
+          <a href="product.html?id=${id}" class="block text-sm text-blue-600 mb-2">View Details</a>
+          <button onclick="addToCart('${id}')" class="bg-[#27491F] text-white px-3 py-1 rounded w-full hover:bg-opacity-90">Add to Cart</button>
+        </div>
+      `;
+    }
+
+    async function loadShopProducts() {
+        const container = document.getElementById("shopProducts");
+        const brandSelect = document.getElementById("filterBrand");
+        const sizeSelect = document.getElementById("filterSize");
+
+        const snapshot = await getDocs(collection(db, "products"));
+        const allProducts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        const brands = new Set();
+        const sizes = new Set();
+
+        allProducts.forEach(p => {
+            if (p.brand) brands.add(p.brand);
+            if (Array.isArray(p.sizes)) p.sizes.forEach(size => sizes.add(size));
+        });
+
+        brandSelect.innerHTML += [...brands].map(b => `<option value="${b}">${b}</option>`).join('');
+        sizeSelect.innerHTML += [...sizes].map(s => `<option value="${s}">${s}</option>`).join('');
+
+        function renderFiltered() {
+            const brandVal = brandSelect.value;
+            const sizeVal = sizeSelect.value;
+            const filtered = allProducts.filter(p =>
+                (!brandVal || p.brand === brandVal) &&
+                (!sizeVal || (Array.isArray(p.sizes) && p.sizes.includes(sizeVal)))
+            );
+            container.innerHTML = filtered.map(p => renderProduct(p, p.id)).join('');
+        }
+
+        brandSelect.onchange = sizeSelect.onchange = renderFiltered;
+        renderFiltered();
+    }
+
+    window.addToCart = function (id) {
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        cart.push(id);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        alert("Added to cart!");
+    };
+
+    loadShopProducts();
+</script>
