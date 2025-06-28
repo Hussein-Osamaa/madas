@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Products - MADAS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --madas-primary: #27491F;
+            --madas-dark: #F0CAE1;
+            --madas-light: #F4F4F4;
+            --madas-accent: #FFD300;
+        }
+    </style>
+    <style>
+        /* Hide barcode SVG on screen, show on print */
+        svg.barcode-svg {
+            display: none;
+        }
+
+        /* Print layout styling */
+        @media print {
+            #printContainer {
+                display: block !important;
+                width: auto;
+                margin: 0;
+                padding: 0;
+            }
+
+            #printContainer .print-item {
+                display: inline-block;
+                width: 8cm;
+                margin: 0.5cm;
+                padding: 0.5cm;
+                border: 1px solid var(--madas-primary);
+                page-break-inside: avoid;
+                text-align: center;
+            }
+
+            #printContainer .print-item .code-text {
+                font-size: 14pt;
+                font-weight: bold;
+                margin-bottom: 0.3cm;
+            }
+
+            #printContainer .print-item svg.barcode-svg {
+                width: 100%;
+                height: auto;
+                margin-bottom: 0.3cm;
+                display: block;
+            }
+
+            #printContainer .print-item .desc-text {
+                font-size: 10pt;
+            }
+        }
+    </style>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+<style>
+    /* Print Container hidden by default */
+    #printContainer {
+        display: none;
+    }
+
+    @media print {
+
+        /* Hide all native elements */
+        body * {
+            display: none !important;
+        }
+
+        /* Show only our print container */
+        #printContainer,
+        #printContainer * {
+            display: block !important;
+        }
+
+        /* Style each item vertically */
+        #printContainer .print-item {
+            display: block;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        #printContainer .print-item svg {
+            display: block;
+            margin: 0 auto 0.5rem;
+        }
+
+        #printContainer .print-item span {
+            display: inline-block;
+            margin: 0 1rem;
+            font-family: sans-serif;
+        }
+    }
+</style>
+</head>
+
+<body class="bg-[var(--madas-light)] text-[var(--madas-dark)]">
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-[var(--madas-primary)] text-white p-6 space-y-6">
+            <h2 class="text-2xl font-bold">MADAS Admin</h2>
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="block hover:text-[var(--madas-accent)]">Dashboard</a>
+                <a href="products.html" class="block hover:text-[var(--madas-accent)] font-semibold">Products</a>
+                <a href="orders.html" class="block hover:text-[var(--madas-accent)]">Orders</a>
+                <a href="#" class="block hover:text-[var(--madas-accent)]">Customers</a>
+                <a href="#" class="block hover:text-[var(--madas-accent)]">Logout</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold">Product Management</h1>
+                <div class="space-x-2 flex items-center">
+                    <button onclick="openModal()"
+                        class="bg-[var(--madas-primary)] text-white px-4 py-2 rounded hover:bg-[#1f3c19]">+ Add
+                        Product</button>
+                    <button onclick="window.print()"
+                        class="bg-[var(--madas-accent)] text-[var(--madas-primary)] px-4 py-2 rounded hover:bg-[var(--madas-hover-yellow)]">
+                        🖨️ Print Barcodes
+                    </button>
+                    <select id="brandFilter"
+                        class="bg-white border border-[var(--madas-primary)] text-[var(--madas-primary)] px-3 py-2 rounded">
+                        <option value="">All Brands</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Product Table -->
+            <div class="overflow-x-auto bg-white rounded shadow">
+                <table class="min-w-full text-sm">
+                    <thead class="bg-[var(--madas-primary)] text-white">
+                        <tr>
+                            <th class="p-3"><input type="checkbox" id="selectAllPrint" /></th>
+                            <th class="p-3 text-left">SKU</th>
+                            <th class="p-3 text-left">Barcode</th>
+                            <th class="p-3 text-left">Name</th>
+                            <th class="p-3 text-left">Brand</th>
+                            <th class="p-3 text-left">Price</th>
+                            <th class="p-3 text-left">Stock</th>
+                            <th class="p-3 text-left">Sizes</th>
+                            <th class="p-3 text-left">Image</th>
+                            <th class="p-3 text-left">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Products will be inserted here via Firebase -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+        <!-- ✅ Add Product Modal -->
+        <div id="addProductModal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
+            <div class="bg-white p-6 rounded shadow max-w-md w-full relative">
+                <h2 class="text-xl font-bold mb-4 text-[var(--madas-primary)]">Add New Product</h2>
+
+                <form id="productForm" class="space-y-3">
+                    <input type="text" id="productName" placeholder="Product Name" required
+                        class="w-full border px-3 py-2 rounded" />
+                    <input type="text" id="brand" placeholder="Brand" required
+                        class="w-full border px-3 py-2 rounded" />
+                    <input type="number" id="price" placeholder="Price" required
+                        class="w-full border px-3 py-2 rounded" />
+                    <input type="number" id="stock" placeholder="Stock Quantity" required
+                        class="w-full border px-3 py-2 rounded" />
+                    <!-- Size Selector -->
+                    <label class="block text-sm font-medium text-gray-700">Available Sizes</label>
+                    <div class="grid grid-cols-4 gap-2 text-sm text-center">
+                        <label><input type="checkbox" name="sizes" value="38" class="mr-1"> 38</label>
+                        <label><input type="checkbox" name="sizes" value="39" class="mr-1"> 39</label>
+                        <label><input type="checkbox" name="sizes" value="40" class="mr-1"> 40</label>
+                        <label><input type="checkbox" name="sizes" value="41" class="mr-1"> 41</label>
+                        <label><input type="checkbox" name="sizes" value="42" class="mr-1"> 42</label>
+                        <label><input type="checkbox" name="sizes" value="43" class="mr-1"> 43</label>
+                        <label><input type="checkbox" name="sizes" value="44" class="mr-1"> 44</label>
+                        <label><input type="checkbox" name="sizes" value="45" class="mr-1"> 45</label>
+                    </div>
+                    <input type="file" id="imageFile" accept="image/*" class="w-full border px-3 py-2 rounded" />
+                    <input type="text" id="sku" placeholder="SKU (Auto)" readonly
+                        class="w-full border px-3 py-2 rounded bg-gray-100" />
+                    <input type="text" id="barcode" placeholder="Barcode (Auto)" readonly
+                        class="w-full border px-3 py-2 rounded bg-gray-100" />
+
+                    <div class="flex justify-end space-x-2">
+                        <button type="button" onclick="closeModal()"
+                            class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-[var(--madas-primary)] text-white rounded hover:bg-[#1f3c19]">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Print layout container -->
+    <div id="printContainer"></div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            getDocs,
+            deleteDoc,
+            doc,
+            updateDoc
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC-ls1TrvSkrw71KqmB_kHYgPoj9H55oa8",
+            authDomain: "madas-store.firebaseapp.com",
+            projectId: "madas-store",
+            storageBucket: "madas-store.firebasestorage.app",
+            messagingSenderId: "527071300010",
+            appId: "1:527071300010:web:70470e2204065b4590583d3",
+            measurementId: "G-NQVR1F4N3Q"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+        window.getStorage = () => getStorage(app);
+
+        let editingId = null;
+
+        const brandFilter = document.getElementById("brandFilter");
+        let allProducts = [];
+
+        window.openModal = function (product = null) {
+            const modal = document.getElementById("addProductModal");
+            const form = document.getElementById("productForm");
+            const skuField = document.getElementById("sku");
+            const barcodeField = document.getElementById("barcode");
+            const submitBtn = form.querySelector("button[type='submit']");
+
+            modal.classList.remove("hidden");
+
+            if (product) {
+                editingId = product.id;
+                form.reset();
+                document.getElementById("productName").value = product.name;
+                document.getElementById("brand").value = product.brand;
+                document.getElementById("price").value = product.price;
+                document.getElementById("stock").value = product.stock;
+                skuField.value = product.sku;
+                barcodeField.value = product.barcode;
+                document.getElementById("imageFile").value = "";
+                document.querySelectorAll('input[name="sizes"]').forEach(cb => {
+                    cb.checked = product.sizes.includes(cb.value);
+                });
+                submitBtn.textContent = "Update";
+            } else {
+                editingId = null;
+                form.reset();
+                const newSku = `MAD-${String(Date.now()).slice(-4)}`;
+                const newBarcode = (100000000000 + Date.now()).toString();
+                skuField.value = newSku;
+                barcodeField.value = newBarcode;
+                document.getElementById("imageFile").value = "";
+                submitBtn.textContent = "Add";
+            }
+        };
+
+        window.closeModal = function () {
+            document.getElementById("addProductModal").classList.add("hidden");
+        };
+
+        async function loadProducts() {
+            const tbody = document.querySelector("tbody");
+            tbody.innerHTML = "";
+            allProducts = [];
+
+            try {
+                const querySnapshot = await getDocs(collection(db, "products"));
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    data.id = docSnap.id;
+                    allProducts.push(data);
+                });
+                // Populate brand filter dropdown
+                const brands = Array.from(new Set(allProducts.map(p => p.brand))).sort();
+                brandFilter.innerHTML = `<option value="">All Brands</option>` + brands.map(b => `<option value="${b}">${b}</option>`).join("");
+
+                // Render table rows for filtered products
+                allProducts.filter(p => !brandFilter.value || p.brand === brandFilter.value).forEach((data) => {
+                    const row = `
+          <tr class="border-b product-row" data-id="${data.id}">
+            <td class="p-3"><input type="checkbox" class="print-checkbox" /></td>
+            <td class="p-3">${data.sku}</td>
+            <td class="p-3">
+              <svg class="barcode-svg" jsbarcode-format="CODE128" jsbarcode-value="${data.barcode}" jsbarcode-textmargin="0" jsbarcode-fontsize="14" width="150" height="40"></svg>
+              <div class="mt-2 text-sm font-mono">${data.barcode}</div>
+            </td>
+            <td class="p-3">${data.name}</td>
+            <td class="p-3">${data.brand}</td>
+            <td class="p-3">$${data.price}</td>
+            <td class="p-3">${data.stock}</td>
+            <td class="p-3">${(data.sizes || []).join(", ")}</td>
+            <td class="p-3">
+              ${data.imageUrl ? `<img src="${data.imageUrl}" class="w-16 h-16 object-cover rounded">` : '—'}
+            </td>
+            <td class="p-3 space-x-2">
+              <button class="edit-btn text-sm bg-yellow-400 px-3 py-1 rounded text-black">Edit</button>
+              <button class="delete-btn text-sm bg-red-500 px-3 py-1 rounded text-white">Delete</button>
+            </td>
+          </tr>
+        `;
+                    tbody.insertAdjacentHTML("beforeend", row);
+                });
+                // render barcodes
+                document.querySelectorAll("svg.barcode-svg").forEach(svg => {
+                    JsBarcode(svg).init();
+                });
+            } catch (err) {
+                console.error("Failed to load products:", err);
+            }
+        }
+
+        document.getElementById("productForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const name = document.getElementById("productName").value;
+            const brand = document.getElementById("brand").value;
+            const price = parseFloat(document.getElementById("price").value);
+            const stock = parseInt(document.getElementById("stock").value);
+            const sku = document.getElementById("sku").value;
+            const barcode = document.getElementById("barcode").value;
+            const sizes = [...document.querySelectorAll('input[name="sizes"]:checked')].map(cb => cb.value);
+            const imageFile = document.getElementById("imageFile").files[0];
+            let imageUrl = "";
+
+            let finalSku = sku || `MAD-${String(Date.now()).slice(-4)}`;
+            let finalBarcode = barcode || (100000000000 + Date.now()).toString();
+
+            if (imageFile) {
+                try {
+                    const imageRef = ref(storage, `product-images/${Date.now()}_${imageFile.name}`);
+                    const snapshot = await uploadBytes(imageRef, imageFile);
+                    imageUrl = await getDownloadURL(snapshot.ref);
+                } catch (error) {
+                    console.error("Image upload failed:", error);
+                    alert("Image upload failed. Please try again.");
+                }
+            }
+
+            const productData = { name, brand, price, stock, sku: finalSku, barcode: finalBarcode, sizes, imageUrl };
+
+            try {
+                if (editingId) {
+                    await updateDoc(doc(db, "products", editingId), productData);
+                } else {
+                    await addDoc(collection(db, "products"), productData);
+                }
+                e.target.reset();
+                closeModal();
+                loadProducts();
+            } catch (error) {
+                console.error("Failed to save product:", error);
+            }
+        });
+
+        loadProducts();
+
+        brandFilter.addEventListener("change", loadProducts);
+
+        // Print selection logic
+        document.getElementById('selectAllPrint').addEventListener('change', e => {
+            document.querySelectorAll('.print-checkbox').forEach(cb => {
+                cb.checked = e.target.checked;
+                const row = cb.closest('tr');
+                row.classList.toggle('selected', e.target.checked);
+            });
+        });
+        document.body.addEventListener('change', e => {
+            if (e.target.classList.contains('print-checkbox')) {
+                const row = e.target.closest('tr');
+                row.classList.toggle('selected', e.target.checked);
+            }
+        });
+
+        document.querySelector("tbody").addEventListener("click", async (e) => {
+            const row = e.target.closest("tr");
+            const id = row?.dataset?.id;
+
+            if (e.target.classList.contains("delete-btn")) {
+                if (confirm("Are you sure you want to delete this product?")) {
+                    try {
+                        await deleteDoc(doc(db, "products", id));
+                        loadProducts();
+                    } catch (err) {
+                        console.error("Failed to delete:", err);
+                    }
+                }
+            }
+
+            if (e.target.classList.contains("edit-btn")) {
+                const row = e.target.closest("tr");
+                const id = row.dataset.id;
+                const cells = row.querySelectorAll("td");
+                const product = {
+                    id,
+                    sku: cells[0].textContent,
+                    barcode: cells[1].querySelector("svg.barcode-svg") ? cells[1].querySelector("svg.barcode-svg").getAttribute("jsbarcode-value") : cells[1].textContent,
+                    name: cells[2].textContent,
+                    brand: cells[3].textContent,
+                    price: cells[4].textContent.replace("$", ""),
+                    stock: cells[5].textContent,
+                    sizes: cells[6].textContent.split(", ").map(size => size.trim())
+                };
+                openModal(product);
+            }
+        });
+        // Print layout logic
+        const printContainer = document.getElementById("printContainer");
+        window.onbeforeprint = () => {
+            printContainer.innerHTML = "";
+            document.querySelectorAll(".product-row.selected").forEach(row => {
+                const code = row.children[2].querySelector("svg.barcode-svg").getAttribute("jsbarcode-value");
+                const svgHtml = row.children[2].querySelector("svg.barcode-svg").outerHTML;
+                // You can customize description as needed; here we combine brand, name, sizes
+                const brand = row.children[4].textContent.trim();
+                const name = row.children[3].textContent.trim();
+                const sizes = row.children[7].textContent.trim();
+                const desc = `${brand} ${name} ${sizes}`;
+                const itemHtml = `
+              <div class="print-item">
+                <div class="code-text">${code}</div>
+                ${svgHtml}
+                <div class="desc-text">${desc}</div>
+              </div>`;
+                printContainer.insertAdjacentHTML("beforeend", itemHtml);
+            });
+        };
+        window.onafterprint = () => {
+            printContainer.innerHTML = "";
+        };
+    </script>
+</body>
+
+
+</html>

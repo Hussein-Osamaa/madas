@@ -1,0 +1,222 @@
+/*
+  🌿 Primary (Dark Moss): #27491F
+  ⚫ Dark Text/Base:    #F0CAE1
+  ⚪ Light Background:  #F4F4F4
+  🟡 Accent:            #FFD300
+*/
+
+:root {
+  --madas-dark: #27491f;
+  --madas-text: #0fcae1;
+  --madas-light-bg: #f4f4f4;
+  --madas-accent: #ffd300;
+  --madas-hover-dark: #1f3b13;
+  --madas-hover-yellow: #e6c000;
+}
+
+/* Global Utilities */
+.hidden {
+  display: none !important;
+}
+
+body {
+  background-color: var(--madas-light-bg);
+  color: var(--madas-dark);
+  font-family: Arial, sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: var(--madas-dark);
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Button Styles */
+.btn-cancel {
+  background-color: #e5e7eb;
+  color: #111827;
+  transition: background-color 0.2s;
+}
+.btn-cancel:hover {
+  background-color: #d1d5db;
+}
+
+.btn-return {
+  background-color: #dc2626;
+  color: #fff;
+  transition: background-color 0.2s;
+}
+.btn-return:hover {
+  background-color: #b91c1c;
+}
+
+.btn-scan {
+  background-color: var(--madas-dark);
+  color: var(--madas-text);
+  transition: background-color 0.2s;
+}
+.btn-scan:hover {
+  background-color: var(--madas-hover-dark);
+}
+
+/* Sidebar Navigation */
+nav ul li a {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  color: var(--madas-text);
+  transition: background-color 0.2s, color 0.2s;
+}
+nav ul li a:hover {
+  background-color: var(--madas-accent);
+  color: var(--madas-dark);
+}
+nav ul li a.active {
+  background-color: var(--madas-accent);
+  color: var(--madas-dark);
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+thead {
+  background-color: var(--madas-dark);
+  color: white;
+}
+th,
+td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+th[data-field] {
+  cursor: pointer;
+}
+tr:hover {
+  background-color: #f9fafb;
+}
+
+/* Status Pills */
+.status {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.status.completed {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+.status.pending {
+  background-color: #fef9c3;
+  color: #92400e;
+}
+.status.returned {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Pagination */
+#pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+#pagination button {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--madas-dark);
+  background-color: white;
+  color: var(--madas-dark);
+  border-radius: 0.375rem;
+  transition: background-color 0.2s, color 0.2s;
+}
+#pagination button:hover:not(:disabled) {
+  background-color: var(--madas-accent);
+  color: var(--madas-dark);
+}
+#pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+#pagination button.active {
+  background-color: var(--madas-accent);
+  color: var(--madas-dark);
+}
+
+/* Modal & Scanner */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+.modal-box {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 480px;
+}
+.modal-box h2 {
+  margin-bottom: 1rem;
+  color: var(--madas-dark);
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+.modal-box input[type="text"] {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--madas-dark);
+  border-radius: 0.375rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.modal-box input[type="text"]:focus {
+  border-color: var(--madas-accent);
+  box-shadow: 0 0 0 2px rgba(255, 211, 0, 0.3);
+}
+
+/* Scanner Container */
+#scanner-container {
+  position: relative;
+  width: 100%;
+  height: 256px;
+  margin-bottom: 1rem;
+}
+#interactive {
+  width: 100%;
+  height: 100%;
+}
+#scanner-container button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .modal-box {
+    padding: 1rem;
+  }
+  th,
+  td {
+    padding: 0.5rem;
+  }
+}

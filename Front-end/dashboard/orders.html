@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Orders | MADAS Dashboard</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <!-- QuaggaJS for barcode scanning -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <!-- SheetJS for Excel export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="assets/CSS/orders.css" />
+</head>
+
+<body class="bg-[var(--madas-light-bg)] text-[var(--madas-dark)] flex">
+
+    <!-- Sidebar Nav -->
+    <aside id="sidebar" class="w-64 bg-[var(--madas-dark)] text-[var(--madas-text)] p-6">
+        <h2 class="text-2xl font-bold mb-6">MADAS Admin</h2>
+        <ul class="space-y-4 text-sm">
+            <li>
+                <a href="dashboard.html"
+                    class="flex items-center p-2 rounded hover:bg-[var(--madas-accent)] hover:text-[var(--madas-dark)]"
+                    data-sidebar-link>
+                    <span class="mr-2">📊</span> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="products.html"
+                    class="flex items-center p-2 rounded hover:bg-[var(--madas-accent)] hover:text-[var(--madas-dark)]"
+                    data-sidebar-link>
+                    <span class="mr-2">👟</span> Products
+                </a>
+            </li>
+            <li>
+                <a href="orders.html"
+                    class="flex items-center p-2 rounded bg-[var(--madas-accent)] text-[var(--madas-dark)]"
+                    data-sidebar-link>
+                    <span class="mr-2">📦</span> Orders
+                </a>
+            </li>
+            <li>
+                <a href="returns.html"
+                    class="flex items-center p-2 rounded hover:bg-[var(--madas-accent)] hover:text-[var(--madas-dark)]"
+                    data-sidebar-link>
+                    <span class="mr-2">↩️</span> Returns
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 md:p-8">
+        <h1 class="text-3xl font-bold mb-6 text-[var(--madas-accent)]">Orders</h1>
+
+        <!-- Search & Filter -->
+        <div class="flex flex-col sm:flex-row gap-4 mb-6">
+            <input id="searchInput" type="text" placeholder="Search by ID, Name, Phone, Email"
+                class="flex-1 p-2 border border-[var(--madas-dark)] rounded focus:ring-2 focus:ring-[var(--madas-accent)]" />
+            <select id="statusFilter"
+                class="p-2 border border-[var(--madas-dark)] rounded focus:ring-2 focus:ring-[var(--madas-accent)]">
+                <option value="">All Statuses</option>
+                <option>Completed</option>
+                <option>Pending</option>
+                <option>Returned</option>
+            </select>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 mb-6">
+            <button id="downloadBtn"
+                class="flex-1 bg-[var(--madas-dark)] text-white py-2 rounded hover:bg-[var(--madas-hover-dark)]">
+                📥 Download Selected
+            </button>
+            <button id="scanBtn" class="flex-1 btn-scan py-2 rounded hover:bg-[var(--madas-hover-dark)]">
+                📦 Scan & Order
+            </button>
+            <button id="returnBtn" class="flex-1 btn-return py-2 rounded hover:bg-red-700">
+                🔁 Return Item
+            </button>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="overflow-x-auto bg-white rounded shadow mb-4">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-[var(--madas-dark)] text-white">
+                    <tr>
+                        <th class="px-4 py-2"><input type="checkbox" id="selectAll" /></th>
+                        <th data-field="id" class="px-4 py-2 text-left text-sm font-medium">Order ID</th>
+                        <th data-field="name" class="px-4 py-2 text-left text-sm font-medium">Name</th>
+                        <th data-field="phone" class="px-4 py-2 text-left text-sm font-medium">Phone</th>
+                        <th data-field="email" class="px-4 py-2 text-left text-sm font-medium">Email</th>
+                        <th data-field="products" class="px-4 py-2 text-left text-sm font-medium">Products</th>
+                        <th data-field="total" class="px-4 py-2 text-left text-sm font-medium">Total</th>
+                        <th data-field="date" class="px-4 py-2 text-left text-sm font-medium">Date</th>
+                        <th data-field="status" class="px-4 py-2 text-left text-sm font-medium">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTableBody" class="divide-y divide-gray-100"></tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div id="pagination" class="flex justify-center space-x-2 mb-8"></div>
+
+        <footer class="text-center text-sm text-[var(--madas-dark)] opacity-80">
+            &copy; 2025 MADAS. All rights reserved.
+        </footer>
+    </main>
+
+    <!-- Scan / Return Modal & Scanner Overlay -->
+    <div id="returnModal"
+        class="modal-backdrop hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="modal-box bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+            <h2 id="modalTitle" class="text-xl font-bold mb-4">Modal</h2>
+            <input id="barcodeInput" type="text" placeholder="Scan or enter barcode"
+                class="w-full px-3 py-2 mb-4 border border-[var(--madas-dark)] rounded focus:ring-2 focus:ring-[var(--madas-accent)]" />
+            <div class="flex justify-end gap-3 mb-4">
+                <button id="cancelBtn" class="btn-cancel px-4 py-2 rounded">Cancel</button>
+                <button id="actionBtn" class="btn-return px-4 py-2 rounded">Action</button>
+            </div>
+            <div id="scanner-container" class="hidden relative">
+                <div id="interactive" class="w-full h-64 bg-gray-200"></div>
+                <button onclick="stopScanner()" class="absolute top-2 right-2 btn-cancel">✕</button>
+            </div>
+            <!-- Scan result and confirmation -->
+            <div id="scanResult" class="hidden mb-4">
+                <p id="scannedProduct" class="text-[var(--madas-dark)] mb-2"></p>
+            </div>
+            <div class="flex justify-end gap-3">
+                <button id="confirmBtn"
+                    class="btn-confirm bg-[var(--madas-accent)] text-[var(--madas-dark)] px-4 py-2 rounded">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script type="module" src="assets/JS/orders.js" defer></script>
+</body>
+
+</html>

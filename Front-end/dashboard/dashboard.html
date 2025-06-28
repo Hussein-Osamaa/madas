@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - MADAS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --madas-primary: #27491F;
+            --madas-dark: #F0CAE1;
+            --madas-light: #F4F4F4;
+            --madas-accent: #FFD300;
+        }
+    </style>
+</head>
+
+<body class="bg-[var(--madas-light)] text-[var(--madas-dark)]">
+
+    <!-- ✅ Sidebar -->
+    <div class="flex min-h-screen">
+        <aside class="w-64 bg-[var(--madas-primary)] text-white p-6 space-y-6">
+            <h2 class="text-2xl font-bold">MADAS Admin</h2>
+            <nav class="space-y-2">
+                <a href="#" class="block hover:text-[var(--madas-accent)]">Dashboard</a>
+                <a href="#" class="block hover:text-[var(--madas-accent)]">Products</a>
+                <a href="#" class="block hover:text-[var(--madas-accent)]">Orders</a>
+                <a href="#" class="block hover:text-[var(--madas-accent)]">Customers</a>
+                <a href="#" class="block hover:text-[var(--madas-accent)]">Inventory</a>
+                <a href="#" class="block hover:text-[var(--madas-accent)]">Logout</a>
+            </nav>
+        </aside>
+
+        <!-- ✅ Main Content -->
+        <main class="flex-1 p-8">
+            <h1 class="text-3xl font-bold mb-6">Dashboard Overview</h1>
+
+            <!-- Placeholder Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-4 rounded shadow">
+                    <h2 class="text-sm text-gray-500">Total Sales</h2>
+                    <p class="text-xl font-bold">$12,450</p>
+                </div>
+                <div class="bg-white p-4 rounded shadow">
+                    <h2 class="text-sm text-gray-500">Orders</h2>
+                    <p class="text-xl font-bold">243</p>
+                </div>
+                <div class="bg-white p-4 rounded shadow">
+                    <h2 class="text-sm text-gray-500">Customers</h2>
+                    <p class="text-xl font-bold">85</p>
+                </div>
+                <div class="bg-white p-4 rounded shadow">
+                    <h2 class="text-sm text-gray-500">Inventory</h2>
+                    <p class="text-xl font-bold">176 items</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+
+</html>
